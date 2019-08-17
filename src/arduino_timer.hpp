@@ -6,6 +6,10 @@
 ///
 namespace timer {
 
+  // Forward declaration
+  template <class... Timers>
+  void wait(Timers&... timers);
+
   ///
   /// @brief      Base timer class
   ///
@@ -44,9 +48,10 @@ namespace timer {
       start(interval, callback);
     }
 
-    // Delete assignment, copy & move constructors.
-    base_timer(const base_timer&) = delete;
-    base_timer(base_timer&&)      = delete;
+    // Delete copy & move constructor and copy assignment.
+    base_timer(const base_timer&)            = delete;
+    base_timer(base_timer&&)                 = delete;
+    base_timer& operator=(const base_timer&) = delete;
 
     ///
     /// @brief      Start the timer
@@ -106,7 +111,7 @@ namespace timer {
     ///
     void wait()
     {
-      while (started() && !tick());
+      timer::wait(*this);
     }
 
   };
