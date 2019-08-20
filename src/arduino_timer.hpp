@@ -26,9 +26,9 @@ namespace timer {
       "TimeType must be an unsigned integral type"
     );
 
-    TimeType _start_time  = 0;
-    TimeType _interval    = 0;
-    void   (*_callback)() = nullptr;
+    TimeType _start_time;
+    TimeType _interval;
+    void   (*_callback)();
 
   public:
 
@@ -48,7 +48,7 @@ namespace timer {
       start(interval, callback);
     }
 
-    // Delete copy & move constructor and copy assignment.
+    // Delete copy & move constructors and copy assignment.
     base_timer(const base_timer&)            = delete;
     base_timer(base_timer&&)                 = delete;
     base_timer& operator=(const base_timer&) = delete;
@@ -85,9 +85,9 @@ namespace timer {
     {
       if (started()) {
         const TimeType now = TimeFunc();
-        if ((now - _start_time) > _interval) {
-          if (Periodic) _start_time = now;
-          else          _interval = 0;
+        if (static_cast<TimeType>(now - _start_time) > _interval) {
+          if (Periodic) _start_time = now;  // Restart if periodic
+          else          _interval = 0;      // Stop if non-periodic
           if (_callback != nullptr)
             _callback();
           return true;
@@ -107,7 +107,7 @@ namespace timer {
     }
 
     ///
-    /// @brief      Wait until the next tick of the timer.
+    /// @brief      Wait until timer is stopped.
     ///
     void wait()
     {
@@ -141,16 +141,17 @@ namespace timer {
   }
 
   // Implementation of wait() function below.
-  template <unsigned long (*TimeFunc)(), typename TimeType, class... Other>
-  bool wait_impl(timer::one_shot<TimeFunc, TimeType>& timer, Other&... other)
+  template <unsigned long (*TimeFunc)(), typename TimeType, bool Periodic, class... Other>
+  bool wait_impl(timer::base_timer<TimeFunc, TimeType, Periodic>& timer, Other&... other)
   {
-    return (!timer.started() || timer.tick()) & wait_impl(other...);
+    timer.tick();
+    return !timer.started() & wait_impl(other...);
   }
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
   ///
-  /// @brief      Wait for multiple non-periodic (<code>timer::one_shot</code>) timers
+  /// @brief      Wait for multiple timers
   ///
   /// @param      timers  The timers
   ///
