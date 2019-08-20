@@ -155,7 +155,7 @@ namespace timer {
   ///
   /// @param      timers  The timers
   ///
-  /// @tparam     Timers  Types of the timers (should automatically deducted)
+  /// @tparam     Timers  Types of the timers (should automatically deduced)
   ///
   template <class... Timers>
   void wait(Timers&... timers)
