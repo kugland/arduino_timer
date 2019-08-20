@@ -6,7 +6,7 @@ CXXFLAGS        := -g -O0
 test: $(ALL_TESTS_BIN)
 	@for t in $(ALL_TESTS_BIN); do \
 		printf "Running test ./$${t} ... " ; \
-		./"$$t" && echo "SUCCESS" || echo "ERROR"; \
+		./"$$t" && echo "PASSED" || echo "ERROR"; \
 	done
 
 clean:

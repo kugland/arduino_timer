@@ -1,5 +1,7 @@
 #include <time.h>
 
+#include "linux_test_funcs.hpp"
+
 static unsigned long millis_skew = 0;
 static unsigned long micros_skew = 0;
 
