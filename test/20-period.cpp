@@ -1,7 +1,3 @@
-#include <cstdlib>
-#include <cmath>
-#include <cstdint>
-
 #include "linux_test_funcs.hpp"
 #include "../src/arduino_timer.hpp"
 
